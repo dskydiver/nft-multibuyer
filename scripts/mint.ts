@@ -11,7 +11,7 @@ async function main() {
   const functionSelector = hre.ethers.id(functionSignature).substring(0, 10) // This gives us the first 4 bytes of the hash
 
   // Amount to mint, for example, 1
-  const amountToMint = 10
+  const amountToMint = 1
 
   // Encoding the parameters. In this case, the amount to mint
   const encodedParams = hre.ethers.AbiCoder.defaultAbiCoder().encode(["uint256"], [amountToMint])
