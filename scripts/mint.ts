@@ -20,7 +20,24 @@ async function main() {
   // This combines the function signature with the encoded parameters
   const data = functionSelector + encodedParams.substring(2)
 
-  await (await mintFactory.batchMint(10, hre.ethers.parseEther('0.5'), nftAddress, data, { value: hre.ethers.parseEther('5') })).wait()
+  // retry till success
+  let tx
+  let retries = 0
+  const maxRetries = 10
+  while (1) {
+    try {
+      tx = await mintFactory.batchMint(10, hre.ethers.parseEther('0.5'), nftAddress, data, { value: hre.ethers.parseEther('5'), gasPrice: hre.ethers.parseUnits('100', 'gwei') })
+      await tx.wait()
+      break
+    } catch (error) {
+      console.log(`Error on tx, retrying... (${retries + 1}/${maxRetries})`)
+      retries += 1
+    }
+  }
+  if (retries === maxRetries) {
+    console.error(`Max retries reached, transaction failed`)
+    process.exit(1)
+  }
 }
 
 main()

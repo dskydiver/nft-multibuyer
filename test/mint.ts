@@ -46,9 +46,21 @@ describe("Mint", function () {
       // Preparing the data for the call
       // This combines the function signature with the encoded parameters
       const data = functionSelector + encodedParams.substring(2) // Remove 0x prefix
+      console.log(data)
 
       // Value to send, e.g., 0.1 Ether, converted to Wei
       const valueToSend = hre.ethers.parseEther("0.01")
+
+      const txdata = minterFactory.interface.encodeFunctionData(
+        "batchMint",
+        [
+          1,
+          hre.ethers.parseEther('1'),
+          '0xbcd65be6fbba1f2af100aee5cd38ebd5a297c7e7',
+          data,
+        ]
+      )
+      console.log(txdata)
 
       await (await minterFactory.batchMint(10, hre.ethers.parseEther('0.001'), await nft.getAddress(), data, { value: valueToSend })).wait()
     })
